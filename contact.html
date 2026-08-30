@@ -238,7 +238,7 @@ var STYLE_PREFIX = 'wsite';
 			<input type="text" name="_gotcha" style="display:none" />
 		</div>
 		<div style="text-align:left; margin-top:10px; margin-bottom:10px;">
-			<button type="submit" class="wsite-button">
+			<button type="submit" class="wsite-button" id="contact-form-submit">
 				<span class="wsite-button-inner">Submit</span>
 			</button>
 		</div>
@@ -246,9 +246,10 @@ var STYLE_PREFIX = 'wsite';
 	<div id="contact-form-success" class="paragraph" style="display:none;">Thanks! Your message has been sent.</div>
 	<div id="contact-form-error" class="paragraph" style="display:none;">Something went wrong — please try again.</div>
 	<script>
-document.getElementById('contact-form').addEventListener('submit', function (e) {
+document.getElementById('contact-form-submit').addEventListener('click', function (e) {
 	e.preventDefault();
-	var form = e.target;
+	e.stopPropagation();
+	var form = document.getElementById('contact-form');
 	fetch(form.action, {
 		method: 'POST',
 		body: new FormData(form),
