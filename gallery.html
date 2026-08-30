@@ -179,104 +179,32 @@ var STYLE_PREFIX = 'wsite';
 		<div class="wsite-section-content">
           <div class="container">
 			<div class="wsite-section-elements">
-				<div><div class="wsite-multicol"><div class="wsite-multicol-table-wrap" style="margin:0 -15px;">
-	<table class="wsite-multicol-table">
-		<tbody class="wsite-multicol-tbody">
-			<tr class="wsite-multicol-tr">
-				<td class="wsite-multicol-col" style="width:62.95652173913%; padding:0 15px;">
-					
-						
-
-<div><div class="wsite-image wsite-image-border-none " style="padding-top:10px;padding-bottom:10px;margin-left:0;margin-right:0;text-align:right">
-<a>
-<img src="uploads/3/9/9/3/39932665/http-gather-fandalism-com-7692092-92b94098-8086-441e-b90e2d96472a26ed-0-454549-ezgif10daf91217a_orig.jpg" alt="Picture" style="width:424;max-width:100%" />
-</a>
-<div style="display:block;font-size:90%"></div>
-</div></div>
-
-
-					
-				</td>				<td class="wsite-multicol-col" style="width:37.04347826087%; padding:0 15px;">
-					
-						
-
-<div class="wsite-spacer" style="height:49px;"></div>
-
-
-					
-				</td>			</tr>
-		</tbody>
-	</table>
-</div></div></div>
-
-<div><div class="wsite-multicol"><div class="wsite-multicol-table-wrap" style="margin:0 -15px;">
-	<table class="wsite-multicol-table">
-		<tbody class="wsite-multicol-tbody">
-			<tr class="wsite-multicol-tr">
-				<td class="wsite-multicol-col" style="width:50%; padding:0 15px;">
-					
-						
-
-<div><div class="wsite-image wsite-image-border-none " style="padding-top:10px;padding-bottom:0px;margin-left:0px;margin-right:0px;text-align:left">
-<a>
-<img src="uploads/3/9/9/3/39932665/funktrain_orig.jpg" alt="Picture" style="width:auto;max-width:100%" />
-</a>
-<div style="display:block;font-size:90%"></div>
-</div></div>
-
-
-					
-				</td>				<td class="wsite-multicol-col" style="width:50%; padding:0 15px;">
-					
-						
-
-<div><div class="wsite-image wsite-image-border-none " style="padding-top:0px;padding-bottom:10px;margin-left:0px;margin-right:0px;text-align:right">
-<a>
-<img src="uploads/3/9/9/3/39932665/saxes_orig.jpg" alt="Picture" style="width:auto;max-width:100%" />
-</a>
-<div style="display:block;font-size:90%"></div>
-</div></div>
-
-
-					
-				</td>			</tr>
-		</tbody>
-	</table>
-</div></div></div>
-
-<div><div class="wsite-image wsite-image-border-none " style="padding-top:10px;padding-bottom:0px;margin-left:0px;margin-right:0px;text-align:center">
-<a>
-<img src="uploads/3/9/9/3/39932665/20190908-221424_orig.jpg" alt="Picture" style="width:328;max-width:100%" />
-</a>
-<div style="display:block;font-size:90%"></div>
-</div></div>
-
-<div class="wsite-spacer" style="height:82px;"></div>
-
-<div><div class="wsite-multicol"><div class="wsite-multicol-table-wrap" style="margin:0 -15px;">
-	<table class="wsite-multicol-table">
-		<tbody class="wsite-multicol-tbody">
-			<tr class="wsite-multicol-tr">
-				<td class="wsite-multicol-col" style="width:46.617029851681%; padding:0 15px;">
-					
-						
-
-<div class="wsite-spacer" style="height:50px;"></div>
-
-
-					
-				</td>				<td class="wsite-multicol-col" style="width:53.382970148319%; padding:0 15px;">
-					
-						
-
-<div class="wsite-spacer" style="height:50px;"></div>
-
-
-					
-				</td>			</tr>
-		</tbody>
-	</table>
-</div></div></div>
+				<div id="photo-rotator"></div>
+				<script>
+(function () {
+	var container = document.getElementById('photo-rotator');
+	fetch('library/manifest.json')
+		.then(function (r) { return r.json(); })
+		.then(function (files) {
+			if (!files.length) return;
+			files.forEach(function (name, i) {
+				var img = document.createElement('img');
+				img.src = 'library/' + name;
+				img.alt = 'Faux Funk photo';
+				if (i === 0) img.className = 'active';
+				container.appendChild(img);
+			});
+			if (files.length < 2) return;
+			var current = 0;
+			setInterval(function () {
+				var imgs = container.querySelectorAll('img');
+				imgs[current].classList.remove('active');
+				current = (current + 1) % imgs.length;
+				imgs[current].classList.add('active');
+			}, 4500);
+		});
+})();
+				</script>
 
 <div class="wsite-spacer" style="height:34px;"></div>
 			</div>
