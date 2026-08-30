@@ -243,6 +243,24 @@ var STYLE_PREFIX = 'wsite';
 			</button>
 		</div>
 	</form>
+	<div id="contact-form-success" class="paragraph" style="display:none;">Thanks! Your message has been sent.</div>
+	<div id="contact-form-error" class="paragraph" style="display:none;">Something went wrong — please try again.</div>
+	<script>
+document.getElementById('contact-form').addEventListener('submit', function (e) {
+	e.preventDefault();
+	var form = e.target;
+	fetch(form.action, {
+		method: 'POST',
+		body: new FormData(form),
+		headers: { 'Accept': 'application/json' }
+	}).then(function (response) {
+		form.style.display = response.ok ? 'none' : '';
+		document.getElementById(response.ok ? 'contact-form-success' : 'contact-form-error').style.display = '';
+	}).catch(function () {
+		document.getElementById('contact-form-error').style.display = '';
+	});
+});
+	</script>
 
 
 
