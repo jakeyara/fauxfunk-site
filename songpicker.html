@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Song Picker</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="robots" content="noindex" />
+
+	<link href="files/vendor/fonts/Montserrat.css" rel="stylesheet" type="text/css" />
+	<link href="files/vendor/fonts/Quicksand.css" rel="stylesheet" type="text/css" />
+
+	<style>
+		:root {
+			--border: rgba(0, 0, 0, 0.4);
+			--border-soft: rgba(0, 0, 0, 0.15);
+			--dim: rgba(0, 0, 0, 0.5);
+			--fill-hover: rgba(0, 0, 0, 0.05);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			background: #ffffff;
+			color: #000000;
+			font-family: 'Quicksand', sans-serif;
+			font-weight: 500;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 3rem 1.5rem 4rem;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		h1 {
+			margin: 0 0 0.4rem;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 700;
+			font-size: 1.6rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			text-align: center;
+		}
+
+		.subtitle {
+			color: var(--dim);
+			margin: 0 0 2.5rem;
+			font-size: 0.95rem;
+			text-align: center;
+		}
+
+		.controls {
+			display: flex;
+			gap: 0.75rem;
+			flex-wrap: wrap;
+			justify-content: center;
+			margin-bottom: 2rem;
+		}
+
+		button {
+			font-family: 'Montserrat', sans-serif;
+			font-size: 12px;
+			font-weight: 500;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			border-radius: 0;
+			border: 1px solid #000000;
+			padding: 14px 24px;
+			cursor: pointer;
+			background: transparent;
+			color: #000000;
+			transition: background-color 150ms ease-in-out, color 150ms ease-in-out, transform 60ms ease;
+		}
+
+		button:active {
+			transform: scale(0.97);
+		}
+
+		button:hover:not(:disabled) {
+			background-color: var(--fill-hover);
+		}
+
+		button#nextBtn {
+			background-color: #000000;
+			color: #ffffff;
+			font-size: 13px;
+			padding: 16px 32px;
+		}
+
+		button#nextBtn:hover:not(:disabled) {
+			background-color: rgba(0, 0, 0, 0.75);
+		}
+
+		button#nextBtn:disabled {
+			background-color: rgba(0, 0, 0, 0.25);
+			border-color: rgba(0, 0, 0, 0.25);
+			cursor: not-allowed;
+			color: #ffffff;
+		}
+
+		.status {
+			color: var(--dim);
+			font-size: 0.85rem;
+			margin-bottom: 1.5rem;
+			text-align: center;
+			min-height: 1.2em;
+		}
+
+		#songList {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			max-width: 480px;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		#songList li {
+			background: #ffffff;
+			border: 1px solid var(--border-soft);
+			padding: 0.9rem 1.1rem;
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			animation: slidein 0.2s ease;
+		}
+
+		#songList li:first-child {
+			border-color: #000000;
+		}
+
+		#songList li .badge {
+			font-family: 'Montserrat', sans-serif;
+			color: var(--dim);
+			font-size: 0.75rem;
+			min-width: 1.6rem;
+		}
+
+		@keyframes slidein {
+			from {
+				opacity: 0;
+				transform: translateY(-6px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.empty {
+			color: var(--dim);
+			font-style: italic;
+		}
+
+		/* modal */
+		.modal-overlay {
+			position: fixed;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 1rem;
+			z-index: 10;
+		}
+
+		.modal-overlay.hidden {
+			display: none;
+		}
+
+		.modal {
+			background: #ffffff;
+			border: 1px solid #000000;
+			padding: 1.75rem;
+			width: 100%;
+			max-width: 420px;
+			max-height: 80vh;
+			overflow-y: auto;
+		}
+
+		.modal h2 {
+			margin-top: 0;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 700;
+			font-size: 1rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+
+		.modal ol {
+			padding-left: 1.4rem;
+			margin: 0 0 1.5rem;
+		}
+
+		.modal ol li {
+			padding: 0.2rem 0;
+		}
+
+		.modal ol li.played {
+			color: var(--dim);
+			text-decoration: line-through;
+		}
+
+		.modal-close {
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<h1>Faux Funk</h1>
+	<p class="subtitle">Song Picker — pick the next song at random. No repeats until the list runs out.</p>
+
+	<div class="controls">
+		<button id="nextBtn">Next Song</button>
+		<button id="clearBtn">Clear</button>
+		<button id="showAllBtn">Show All Songs</button>
+	</div>
+
+	<p class="status" id="status"></p>
+
+	<ul id="songList"></ul>
+
+	<div class="modal-overlay hidden" id="modalOverlay">
+		<div class="modal">
+			<h2>All Songs</h2>
+			<ol id="allSongsList"></ol>
+			<button class="modal-close" id="closeModalBtn">Close</button>
+		</div>
+	</div>
+
+	<script>
+		const SONGS = [
+			"Introduce Myself",
+			"Turn the Engine Over",
+			"Future Tense",
+			"I will Remember",
+			"Rumble Strip",
+			"Walls",
+			"All is said",
+			"Enders Game",
+			"Adelita",
+			"Methusela",
+			"Stay",
+			"Goodbye",
+			"The other side",
+			"Blinded",
+			"Slow Roll",
+			"Natural Order",
+			"The Movement",
+			"Zozobra",
+			"One more time",
+			"Winter song Over with me",
+		];
+
+		const STORAGE_KEY = "fauxfunk-setlist-state";
+
+		const nextBtn = document.getElementById("nextBtn");
+		const clearBtn = document.getElementById("clearBtn");
+		const showAllBtn = document.getElementById("showAllBtn");
+		const closeModalBtn = document.getElementById("closeModalBtn");
+		const modalOverlay = document.getElementById("modalOverlay");
+		const allSongsList = document.getElementById("allSongsList");
+		const songListEl = document.getElementById("songList");
+		const statusEl = document.getElementById("status");
+
+		let remaining = [];
+		let played = [];
+
+		function loadState() {
+			const raw = localStorage.getItem(STORAGE_KEY);
+			if (raw) {
+				try {
+					const saved = JSON.parse(raw);
+					if (
+						Array.isArray(saved.remaining) &&
+						Array.isArray(saved.played) &&
+						saved.remaining.length + saved.played.length === SONGS.length
+					) {
+						remaining = saved.remaining;
+						played = saved.played;
+						return;
+					}
+				} catch (e) {
+					// fall through to fresh state
+				}
+			}
+			resetState();
+		}
+
+		function saveState() {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify({ remaining, played }));
+		}
+
+		function resetState() {
+			remaining = SONGS.map((_, i) => i);
+			played = [];
+		}
+
+		function render() {
+			songListEl.innerHTML = "";
+			if (played.length === 0) {
+				const li = document.createElement("li");
+				li.className = "empty";
+				li.textContent = "No songs picked yet.";
+				songListEl.appendChild(li);
+			} else {
+				[...played].reverse().forEach((idx, i) => {
+					const li = document.createElement("li");
+					const order = played.length - i;
+					li.innerHTML = `<span class="badge">#${order}</span><span>${SONGS[idx]}</span>`;
+					songListEl.appendChild(li);
+				});
+			}
+
+			if (remaining.length === 0) {
+				nextBtn.disabled = true;
+				statusEl.textContent = "All songs have been played. Press Clear to start a new set.";
+			} else {
+				nextBtn.disabled = false;
+				statusEl.textContent = `${remaining.length} song${remaining.length === 1 ? "" : "s"} left in the pool.`;
+			}
+
+			renderAllSongsModal();
+		}
+
+		function renderAllSongsModal() {
+			allSongsList.innerHTML = "";
+			SONGS.forEach((title, idx) => {
+				const li = document.createElement("li");
+				li.textContent = title;
+				if (played.includes(idx)) li.classList.add("played");
+				allSongsList.appendChild(li);
+			});
+		}
+
+		function pickNext() {
+			if (remaining.length === 0) return;
+			const pickPos = Math.floor(Math.random() * remaining.length);
+			const [songIdx] = remaining.splice(pickPos, 1);
+			played.push(songIdx);
+			saveState();
+			render();
+		}
+
+		function clearAll() {
+			resetState();
+			saveState();
+			render();
+		}
+
+		nextBtn.addEventListener("click", pickNext);
+		clearBtn.addEventListener("click", clearAll);
+		showAllBtn.addEventListener("click", () => modalOverlay.classList.remove("hidden"));
+		closeModalBtn.addEventListener("click", () => modalOverlay.classList.add("hidden"));
+		modalOverlay.addEventListener("click", (e) => {
+			if (e.target === modalOverlay) modalOverlay.classList.add("hidden");
+		});
+
+		loadState();
+		render();
+	</script>
+</body>
+</html>
