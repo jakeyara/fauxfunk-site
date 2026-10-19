@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The static website for fauxfunk.com, a band site with 4 pages (`index.html`, `gallery.html`, `media.html`, `contact.html`). It was migrated off Weebly hosting onto Cloudflare, and is deployed straight from this repo — there is no framework, no bundler, and no `package.json`. Treat every HTML file as hand-written, plain HTML/CSS/JS.
 
+**Local location:** `~/Personal Repos/fauxfunk-site`. All of Jake's personal repos live under `~/Personal Repos/`; it moved there on 2026-10-19 from `~/fauxfunk/fauxfunk-site`, which was over-nested.
+
+**Anything in the repo root is public by default.** `wrangler.jsonc` sets the assets directory to `./`, so every file here is served at `https://fauxfunk.com/<path>` unless `.assetsignore` excludes it — this file itself was reachable at `/CLAUDE.md` until 2026-10-19. Add any new dev-only file in the root to `.assetsignore`. `README.md`, `wrangler.jsonc`, `.gitignore` and `scripts/` are still served.
+
 ## Commands
 
 - **Preview locally**: `python3 -m http.server 8934` from the repo root, then open `http://127.0.0.1:8934/`. There is no dev server or build step for the site itself.

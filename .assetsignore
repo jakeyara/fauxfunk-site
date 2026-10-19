@@ -1,0 +1,5 @@
+# Files in the repo root that must not be served as part of the site.
+# Wrangler reads this from the assets directory (./, set in wrangler.jsonc)
+# and excludes these from what it uploads. gitignore syntax.
+CLAUDE.md
+.assetsignore
