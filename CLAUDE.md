@@ -8,7 +8,7 @@ The static website for fauxfunk.com, a band site with 4 pages (`index.html`, `ga
 
 **Local location:** `~/Personal Repos/fauxfunk-site`. All of Jake's personal repos live under `~/Personal Repos/`; it moved there on 2026-10-19 from `~/fauxfunk/fauxfunk-site`, which was over-nested.
 
-**Anything in the repo root is public by default.** `wrangler.jsonc` sets the assets directory to `./`, so every file here is served at `https://fauxfunk.com/<path>` unless `.assetsignore` excludes it — this file itself was reachable at `/CLAUDE.md` until 2026-10-19. Add any new dev-only file in the root to `.assetsignore`. `README.md`, `wrangler.jsonc`, `.gitignore` and `scripts/` are still served.
+**Anything in the repo root is public by default.** `wrangler.jsonc` sets the assets directory to `./`, so every file here is served at `https://fauxfunk.com/<path>` unless `.assetsignore` excludes it — this file itself was reachable at `/CLAUDE.md` until 2026-10-19. Add any new dev-only file in the root to `.assetsignore`, which now also excludes `README.md`, `wrangler.jsonc`, `.gitignore` and `scripts/`. It filters only the upload, so the gallery-manifest build step still runs.
 
 ## Commands
 
